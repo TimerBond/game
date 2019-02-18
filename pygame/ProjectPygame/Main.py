@@ -7,6 +7,7 @@ import Coin as coin
 import Monster as monster
 import random
 import sys
+import Money as money
 
 
 def terminate():
@@ -51,12 +52,14 @@ def generate_map(map):
                 renderMap.Block(x, y, all_blocks, all_sprites)
             elif map[y][x] == 'M':
                 monster.Monster(monsters, type_monster[2], x, y)
+            elif map[y][x] == 'C':
+                money.Money(coin_sprites, x, y)
     return x, y
 
 
 pygame.font.init()
 moneyFont = pygame.font.SysFont('Money Shower', 50)
-money = moneyFont.render("0", False, (0, 0, 0))
+moneyIcon = moneyFont.render("0", False, (0, 0, 0))
 all_sprites = pygame.sprite.Group()
 all_blocks = pygame.sprite.Group()
 back = pygame.sprite.Group()
@@ -90,6 +93,6 @@ while running:
     clouds_sprites.update()
     all_blocks.draw(screen)
     coin_sprites.draw(screen)
-    screen.blit(money, (1300, 10))
+    screen.blit(moneyIcon, (1300, 10))
     monsters.draw(screen)
     pygame.display.flip()
