@@ -16,6 +16,13 @@ def load_image(name, colorkey=None):
         image.set_colorkey(colorkey)
     return image
 
+def load_sound(name):
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.music.load(fullname)
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
 
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y):
@@ -44,11 +51,13 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
 
 pygame.init()
-size = width, height = 360, 120
+size = width, height = 120, 120
 screen = pygame.display.set_mode(size)
 all_sprites = pygame.sprite.Group()
 move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
 clock = pygame.time.Clock()
+load_sound('minecraft-standartnaya-pesnya-maynkraft.mp3')
+pygame.mixer.music.play()
 t = 0
 b = False
 running = True
@@ -57,15 +66,17 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYUP:
-            all_sprites.empty()
-            move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
-            b = False
+            if event.key == 275 or event.key == 32:
+                all_sprites.empty()
+                move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
+                b = False
         if event.type == pygame.KEYDOWN:
-            all_sprites.empty()
             if event.key == 275:
+                all_sprites.empty()
                 move = AnimatedSprite(load_image('anim2.png'), 9, 1, 0, 0)
                 print('run')
             if event.key == 32:
+                all_sprites.empty()
                 move = AnimatedSprite(load_image('anim3.png'), 7, 1, 0, 0)
                 b = True
                 print('jump')
@@ -79,6 +90,6 @@ while running:
         move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
     all_sprites.draw(screen)
     all_sprites.update()
-    clock.tick(10)
+    clock.tick(15)
     pygame.display.flip()
 pygame.quit()
