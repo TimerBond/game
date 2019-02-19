@@ -4,7 +4,7 @@ from const import *
 import Background as bg
 import Clouds as cloud
 import Coin as coin
-import Monster as monster
+import Monster
 import random
 import sys
 import Money as money
@@ -51,7 +51,7 @@ def generate_map(map):
             if map[y][x] == '#':
                 renderMap.Block(x, y, all_blocks, all_sprites)
             elif map[y][x] == 'M':
-                monster.Monster(monsters, type_monster[2], x, y)
+                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks)
             elif map[y][x] == 'C':
                 money.Money(coin_sprites, x, y)
     return x, y
@@ -68,9 +68,10 @@ coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
 
 type_monster = {
-    1: "sprites/monster.png",
-    2: "sprites/monster1.png",
-    3: "sprites/monster2.png"
+    "0_1": "sprites/monster0_1.png",
+    "0_2": "sprites/monster0_2.png",
+    "1_1": "sprites/monster1_1.png",
+    "1_2": "sprites/monster1_2.png"
 }
 c = coin.Coin(coin_sprites)
 
@@ -95,4 +96,5 @@ while running:
     coin_sprites.draw(screen)
     screen.blit(moneyIcon, (1300, 10))
     monsters.draw(screen)
+    monsters.update()
     pygame.display.flip()
