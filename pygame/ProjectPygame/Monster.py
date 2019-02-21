@@ -18,6 +18,8 @@ class Monster(pygame.sprite.Sprite):
         self.blocks = blocks
 
     def update(self, *args):
+        if self.direct == 0 and self.rect.x <= 1300:
+            pass
         self.rect.x += self.type[self.direct] * 25
         self.rect.y += 5
         block = pygame.sprite.spritecollide(self, self.blocks, False)

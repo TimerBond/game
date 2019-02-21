@@ -59,7 +59,6 @@ def generate_map(map):
 
 pygame.font.init()
 moneyFont = pygame.font.SysFont('Money Shower', 50)
-moneyIcon = moneyFont.render("0", False, (0, 0, 0))
 all_sprites = pygame.sprite.Group()
 all_blocks = pygame.sprite.Group()
 back = pygame.sprite.Group()
@@ -67,13 +66,12 @@ clouds_sprites = pygame.sprite.Group()
 coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
 
+player = pygame.sprite.Group()
 type_monster = {
-    "0_1": "sprites/monster0_1.png",
-    "0_2": "sprites/monster0_2.png",
     "1_1": "sprites/monster1_1.png",
     "1_2": "sprites/monster1_2.png"
 }
-c = coin.Coin(coin_sprites)
+c = coin.Coin(coin_sprites, player)
 
 width, height = generate_map(load_level("map_1.txt"))
 
@@ -94,6 +92,7 @@ while running:
     clouds_sprites.update()
     all_blocks.draw(screen)
     coin_sprites.draw(screen)
+    moneyIcon = moneyFont.render(str(COUNT_COINS), False, (0, 0, 0))
     screen.blit(moneyIcon, (1300, 10))
     monsters.draw(screen)
     monsters.update()
