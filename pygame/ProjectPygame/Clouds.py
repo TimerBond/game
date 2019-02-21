@@ -5,8 +5,8 @@ import random
 class Cloud(pygame.sprite.Sprite):
     image = pygame.image.load("sprites/cloud.png")
 
-    def __init__(self, group):
-        super().__init__(group)
+    def __init__(self, group, all_sprites):
+        super().__init__(group, all_sprites)
         self.image = Cloud.image
         self.rect = self.image.get_rect()
         self.rect.y = random.randint(0, 300)

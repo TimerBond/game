@@ -5,9 +5,10 @@ import Bullet
 
 class Monster(pygame.sprite.Sprite):
 
-    def __init__(self, group, type, x, y, blocks, bullets):
-        super().__init__(group)
+    def __init__(self, group, type, x, y, blocks, bullets, all_sprites):
+        super().__init__(group, all_sprites)
         self.image = pygame.image.load(type)
+        self.all_sprites = all_sprites
         self.rect = self.image.get_rect().move(
             CELL_SIZE * x - 5, CELL_SIZE * y - 5
         )
@@ -22,7 +23,7 @@ class Monster(pygame.sprite.Sprite):
 
     def update(self, *args):
         if 0 <= self.rect.x <= 1300 and self.timeToShoot % 60 == 0:
-            Bullet.Bullet(self.bullets, self.rect.x, self.rect.y, self.direct, self.blocks)
+            Bullet.Bullet(self.bullets, self.rect.x, self.rect.y, self.direct, self.blocks, self.all_sprites)
         self.timeToShoot += 1
         if self.direct == 0 and self.rect.x <= 1300:
             pass

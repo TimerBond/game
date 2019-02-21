@@ -51,10 +51,15 @@ def generate_map(map):
             if map[y][x] == '#':
                 renderMap.Block(x, y, all_blocks, all_sprites)
             elif map[y][x] == 'M':
-                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks, bullets)
+                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks, bullets, all_sprites)
             elif map[y][x] == 'C':
-                money.Money(coin_sprites, x, y)
+                money.Money(coin_sprites, x, y, all_sprites, player)
     return x, y
+
+
+def Camera(all_sprites):
+    for sprite in all_sprites:
+        sprite.rect.x -= PLAYER_SPEED
 
 
 pygame.font.init()
@@ -72,21 +77,30 @@ type_monster = {
     "1_1": "sprites/monster1_1.png",
     "1_2": "sprites/monster1_2.png"
 }
-c = coin.Coin(coin_sprites, player)
+c = coin.Coin(coin_sprites)
 
 width, height = generate_map(load_level("map_1.txt"))
 
 screen = pygame.display.set_mode(SIZE)
 background = bg.Background(back)
 for _ in range(5):
-    cl = cloud.Cloud(clouds_sprites)
+    cl = cloud.Cloud(clouds_sprites, all_sprites)
 running = True
 
 start_screen()
+was = False
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == 275:
+                was = True
+        elif event.type == pygame.KEYUP:
+            if event.key == 275:
+                was = False
+    if was:
+        Camera(all_sprites)
     screen.fill((255, 255, 255))
     back.draw(screen)
     clouds_sprites.draw(screen)

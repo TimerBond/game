@@ -3,8 +3,8 @@ import pygame
 
 class Bullet(pygame.sprite.Sprite):
 
-    def __init__(self, group, x, y, direction, all_blocks):
-        super().__init__(group)
+    def __init__(self, group, x, y, direction, all_blocks, all_sprites):
+        super().__init__(group, all_sprites)
         self.group = group
         self.direction = direction
         if self.direction == 0:
