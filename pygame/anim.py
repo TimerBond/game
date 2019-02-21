@@ -32,7 +32,6 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.rect = self.rect.move(x, y)
-        print(self.frames)
 
     def cut_sheet(self, sheet, columns, rows):
 
@@ -49,11 +48,11 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
 
-
 pygame.init()
 size = width, height = 120, 120
 screen = pygame.display.set_mode(size)
 all_sprites = pygame.sprite.Group()
+jump_sprite = pygame.sprite.Group()
 move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
 clock = pygame.time.Clock()
 load_sound('minecraft-standartnaya-pesnya-maynkraft.mp3')
@@ -66,30 +65,27 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYUP:
-            if event.key == 275 or event.key == 32:
+            if event.key == 275:
                 all_sprites.empty()
                 move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
-                b = False
         if event.type == pygame.KEYDOWN:
             if event.key == 275:
                 all_sprites.empty()
                 move = AnimatedSprite(load_image('anim2.png'), 9, 1, 0, 0)
-                print('run')
             if event.key == 32:
                 all_sprites.empty()
                 move = AnimatedSprite(load_image('anim3.png'), 7, 1, 0, 0)
                 b = True
-                print('jump')
-    screen.fill(pygame.Color('white'))
     if b:
         t += 1
     if t == 7:
-        t = 0
         b = False
+        t = 0
         all_sprites.empty()
         move = AnimatedSprite(load_image('anim1.png'), 8, 1, 0, 0)
+    screen.fill(pygame.Color('white'))
     all_sprites.draw(screen)
     all_sprites.update()
-    clock.tick(15)
+    clock.tick(10)
     pygame.display.flip()
 pygame.quit()
