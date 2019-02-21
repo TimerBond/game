@@ -7,6 +7,7 @@ class Coin(pygame.sprite.Sprite):
 
     def __init__(self, group, player):
         super().__init__(group)
+        self.group = group
         self.image = Coin.image
         self.rect = self.image.get_rect()
         self.rect.x = 1250
@@ -16,3 +17,5 @@ class Coin(pygame.sprite.Sprite):
     def update(self, *args):
         if pygame.sprite.spritecollideany(self, self.player):
             increaseCoins()
+            self.group.remove(self)
+
