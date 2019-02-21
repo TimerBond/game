@@ -12,7 +12,7 @@ class Bullet(pygame.sprite.Sprite):
         else:
             self.image = pygame.image.load("sprites/fireball_2.png")
         self.rect = self.image.get_rect().move(
-            x, y + 15
+            x, y + 20
         )
         self.type = {
             0: -10,

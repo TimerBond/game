@@ -5,9 +5,9 @@ import Background as bg
 import Clouds as cloud
 import Coin as coin
 import Monster
-import random
 import sys
 import Money as money
+import MainPlayer
 
 
 def terminate():
@@ -45,6 +45,7 @@ def load_level(filename):
 
 
 def generate_map(map):
+    count = 0
     y, x = None, None
     for y in range(len(map)):
         for x in range(len(map[y])):
@@ -53,8 +54,13 @@ def generate_map(map):
             elif map[y][x] == 'M':
                 Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks, bullets, all_sprites)
             elif map[y][x] == 'C':
-                money.Money(coin_sprites, x, y, all_sprites, player)
-    return x, y
+                money.Money(coin_sprites, x, y, all_sprites, player_group)
+                count += 1
+            elif map[y][x] == 'P':
+                global player_x, player_y
+                player_x = x * CELL_SIZE
+                player_y = y * CELL_SIZE
+    return x, y, count
 
 
 def Camera(all_sprites):
@@ -72,14 +78,16 @@ coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 
-player = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
 type_monster = {
     "1_1": "sprites/monster1_1.png",
     "1_2": "sprites/monster1_2.png"
 }
 c = coin.Coin(coin_sprites)
+player_x = 0
+player_y = 0
 
-width, height = generate_map(load_level("map_1.txt"))
+width, height, count_coins = generate_map(load_level("map_1.txt"))
 
 screen = pygame.display.set_mode(SIZE)
 background = bg.Background(back)
@@ -88,17 +96,41 @@ for _ in range(5):
 running = True
 
 start_screen()
+
+player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
+                                   8, 1, player_x, player_y, player_group)
 was = False
+b = False
+t = 0
+clock = pygame.time.Clock()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == 275:
+                player_group.empty()
+                player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim2.png'),
+                                                   9, 1, player_x, player_y, player_group)
                 was = True
+            if event.key == 32:
+                player_group.empty()
+                player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim3.png'),
+                                                   7, 1, player_x, player_y, player_group)
+                b = True
         elif event.type == pygame.KEYUP:
             if event.key == 275:
+                player_group.empty()
+                player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
+                                                   8, 1, player_x, player_y, player_group)
                 was = False
+    if b:
+        t += 1
+    if t == 7:
+        b = False
+        t = 0
+        player_group.empty()
+        player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'), 8, 1, 0, 0, player_group)
     if was:
         Camera(all_sprites)
     screen.fill((255, 255, 255))
@@ -107,10 +139,14 @@ while running:
     clouds_sprites.update()
     all_blocks.draw(screen)
     coin_sprites.draw(screen)
-    moneyIcon = moneyFont.render(str(COUNT_COINS), False, (0, 0, 0))
+    coin_sprites.update()
+    moneyIcon = moneyFont.render(str(count_coins - len(coin_sprites) + 1), False, (0, 0, 0))
     screen.blit(moneyIcon, (1300, 10))
     monsters.draw(screen)
     monsters.update()
     bullets.draw(screen)
     bullets.update()
+    player_group.draw(screen)
+    player_group.update()
+    clock.tick(10)
     pygame.display.flip()
