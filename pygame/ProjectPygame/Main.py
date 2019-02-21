@@ -51,7 +51,7 @@ def generate_map(map):
             if map[y][x] == '#':
                 renderMap.Block(x, y, all_blocks, all_sprites)
             elif map[y][x] == 'M':
-                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks)
+                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks, bullets)
             elif map[y][x] == 'C':
                 money.Money(coin_sprites, x, y)
     return x, y
@@ -65,6 +65,7 @@ back = pygame.sprite.Group()
 clouds_sprites = pygame.sprite.Group()
 coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 
 player = pygame.sprite.Group()
 type_monster = {
@@ -96,4 +97,6 @@ while running:
     screen.blit(moneyIcon, (1300, 10))
     monsters.draw(screen)
     monsters.update()
+    bullets.draw(screen)
+    bullets.update()
     pygame.display.flip()

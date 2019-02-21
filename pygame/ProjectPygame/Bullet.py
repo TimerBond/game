@@ -3,20 +3,24 @@ import pygame
 
 class Bullet(pygame.sprite.Sprite):
 
-    def __init__(self, group, x, y, direction):
+    def __init__(self, group, x, y, direction, all_blocks):
         super().__init__(group)
+        self.group = group
         self.direction = direction
         if self.direction == 0:
             self.image = pygame.image.load("sprites/fireball_1.png")
         else:
             self.image = pygame.image.load("sprites/fireball_2.png")
         self.rect = self.image.get_rect().move(
-            x - 10, y
+            x, y + 15
         )
         self.type = {
-            0: -5,
-            1: 5
+            0: -10,
+            1: 10
         }
+        self.all_blocks = all_blocks
 
     def update(self, *args):
         self.rect.x += self.type[self.direction]
+        if pygame.sprite.spritecollideany(self, self.all_blocks) or self.rect.x < 0:
+            self.group.remove(self)

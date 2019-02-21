@@ -1,10 +1,11 @@
 import pygame
 from const import *
+import Bullet
 
 
 class Monster(pygame.sprite.Sprite):
 
-    def __init__(self, group, type, x, y, blocks):
+    def __init__(self, group, type, x, y, blocks, bullets):
         super().__init__(group)
         self.image = pygame.image.load(type)
         self.rect = self.image.get_rect().move(
@@ -16,8 +17,13 @@ class Monster(pygame.sprite.Sprite):
         }
         self.direct = 0
         self.blocks = blocks
+        self.bullets = bullets
+        self.timeToShoot = 1
 
     def update(self, *args):
+        if 0 <= self.rect.x <= 1300 and self.timeToShoot % 60 == 0:
+            Bullet.Bullet(self.bullets, self.rect.x, self.rect.y, self.direct, self.blocks)
+        self.timeToShoot += 1
         if self.direct == 0 and self.rect.x <= 1300:
             pass
         self.rect.x += self.type[self.direct] * 25
