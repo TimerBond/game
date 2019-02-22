@@ -8,6 +8,7 @@ import Monster
 import sys
 import Money as money
 import MainPlayer
+import HeroBullet
 
 
 def terminate():
@@ -52,7 +53,8 @@ def generate_map(map):
             if map[y][x] == '#':
                 renderMap.Block(x, y, all_blocks, all_sprites)
             elif map[y][x] == 'M':
-                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks, bullets, all_sprites)
+                Monster.Monster(monsters, type_monster["1_1"], x, y, all_blocks, bullets, all_sprites, player_group,
+                                hero_bullets)
             elif map[y][x] == 'C':
                 money.Money(coin_sprites, x, y, all_sprites, player_group)
                 count += 1
@@ -77,6 +79,7 @@ clouds_sprites = pygame.sprite.Group()
 coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
+hero_bullets = pygame.sprite.Group()
 
 player_group = pygame.sprite.Group()
 type_monster = {
@@ -98,39 +101,59 @@ running = True
 start_screen()
 
 player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
-                                   8, 1, player_x, player_y, player_group)
+                                   8, 1, player_x, player_y, player_group, 3)
 was = False
 b = False
 t = 0
 clock = pygame.time.Clock()
+player_HP = 3
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == 275:
+                cur_HP = 0
+                for i in player_group:
+                    cur_HP = i.HP
                 player_group.empty()
                 player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim2.png'),
-                                                   9, 1, player_x, player_y, player_group)
+                                                   9, 1, player_x, player_y, player_group, cur_HP)
                 was = True
             if event.key == 32:
+                cur_HP = 0
+                for i in player_group:
+                    cur_HP = i.HP
                 player_group.empty()
                 player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim3.png'),
-                                                   7, 1, player_x, player_y, player_group)
+                                                   7, 1, player_x, player_y - CELL_SIZE, player_group, cur_HP)
                 b = True
+            if event.key == 118:
+                pos_x = 0
+                pos_y = 0
+                for j in player_group:
+                    pos_x = j.rect.x
+                    pos_y = j.rect.y
+                HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters)
         elif event.type == pygame.KEYUP:
             if event.key == 275:
+                cur_HP = 0
+                for i in player_group:
+                    cur_HP = i.HP
                 player_group.empty()
                 player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
-                                                   8, 1, player_x, player_y, player_group)
+                                                   8, 1, player_x, player_y, player_group, cur_HP)
                 was = False
     if b:
         t += 1
     if t == 7:
         b = False
         t = 0
+        cur_HP = 0
+        for i in player_group:
+            cur_HP = i.HP
         player_group.empty()
-        player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'), 8, 1, 0, 0, player_group)
+        player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'), 8, 1, 0, 0, player_group, cur_HP)
     if was:
         Camera(all_sprites)
     screen.fill((255, 255, 255))
@@ -142,6 +165,8 @@ while running:
     coin_sprites.update()
     moneyIcon = moneyFont.render(str(count_coins - len(coin_sprites) + 1), False, (0, 0, 0))
     screen.blit(moneyIcon, (1300, 10))
+    hero_bullets.draw(screen)
+    hero_bullets.update()
     monsters.draw(screen)
     monsters.update()
     bullets.draw(screen)

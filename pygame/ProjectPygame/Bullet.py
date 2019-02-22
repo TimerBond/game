@@ -1,12 +1,14 @@
 import pygame
+from const import *
 
 
 class Bullet(pygame.sprite.Sprite):
 
-    def __init__(self, group, x, y, direction, all_blocks, all_sprites):
+    def __init__(self, group, x, y, direction, all_blocks, all_sprites, player):
         super().__init__(group, all_sprites)
         self.group = group
         self.direction = direction
+        self.player = player
         if self.direction == 0:
             self.image = pygame.image.load("sprites/fireball_1.png")
         else:
@@ -19,8 +21,13 @@ class Bullet(pygame.sprite.Sprite):
             1: 10
         }
         self.all_blocks = all_blocks
+        self.catch = 0
 
     def update(self, *args):
         self.rect.x += self.type[self.direction]
         if pygame.sprite.spritecollideany(self, self.all_blocks) or self.rect.x < 0:
             self.group.remove(self)
+        if pygame.sprite.spritecollideany(self, self.player):
+            self.group.remove(self)
+            for i in self.player:
+                i.HP -= 1
