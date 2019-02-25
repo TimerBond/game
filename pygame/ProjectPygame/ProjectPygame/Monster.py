@@ -5,7 +5,7 @@ import Bullet
 
 class Monster(pygame.sprite.Sprite):
 
-    def __init__(self, group, type, x, y, blocks, bullets, all_sprites, player):
+    def __init__(self, group, type, x, y, blocks, bullets, all_sprites, player, hero_bullets):
         super().__init__(group, all_sprites)
         self.image = pygame.image.load(type)
         self.all_sprites = all_sprites
@@ -21,6 +21,8 @@ class Monster(pygame.sprite.Sprite):
         self.blocks = blocks
         self.bullets = bullets
         self.timeToShoot = 1
+        self.hero_bullets = hero_bullets
+        self.group = group
 
     def update(self, *args):
         if 0 <= self.rect.x <= 1300 and self.timeToShoot % 60 == 0:
@@ -50,3 +52,9 @@ class Monster(pygame.sprite.Sprite):
                 else:
                     self.image = pygame.image.load("sprites/monster1_1.png")
                 self.direct = abs(self.direct - 1)
+
+        monster = pygame.sprite.spritecollide(self, self.hero_bullets, False)
+        if len(monster) > 0:
+            self.group.remove(self)
+            for i in monster:
+                self.hero_bullets.remove(i)
