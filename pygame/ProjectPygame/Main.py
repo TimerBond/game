@@ -10,6 +10,7 @@ import Money as money
 import MainPlayer
 import HeroBullet
 import Heart
+import Finish
 
 
 def terminate():
@@ -63,6 +64,8 @@ def generate_map(map):
                 global player_x, player_y
                 player_x = x * CELL_SIZE
                 player_y = y * CELL_SIZE
+            elif map[y][x] == 'F':
+                Finish.Finish(finish_group, x, y)
     return x, y, count
 
 
@@ -82,6 +85,7 @@ coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 hero_bullets = pygame.sprite.Group()
+finish_group = pygame.sprite.Group()
 heart = pygame.sprite.Group()
 h = Heart.Heart(heart)
 
@@ -113,6 +117,7 @@ clock = pygame.time.Clock()
 player_HP = 3
 superSkill = False
 tap = True
+plus_x = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -185,6 +190,7 @@ while running:
         player = MainPlayer.AnimatedSprite(pygame.image.load(image), 8, 1, player_x, player_y, player_group, player_HP, all_blocks)
     if was:
         Camera(all_sprites)
+        plus_x += PLAYER_SPEED
     screen.fill((255, 255, 255))
     back.draw(screen)
     clouds_sprites.draw(screen)
@@ -205,5 +211,6 @@ while running:
     heart.draw(screen)
     lifeIcon = lifeFont.render(str(player_HP), False, (0, 0, 0))
     screen.blit(lifeIcon, (50, 5))
+    finish_group.draw(screen)
     clock.tick(10)
     pygame.display.flip()
