@@ -108,16 +108,12 @@ running = True
 
 start_screen()
 
-player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
-                                   8, 1, player_x, player_y, player_group, 3, all_blocks)
-was = False
+player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks)
+go = False
 b = False
 t = 0
 clock = pygame.time.Clock()
 player_HP = 3
-superSkill = False
-tap = True
-plus_x = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -128,26 +124,13 @@ while running:
             if event.key == 116:
                 superSkill = False
             if event.key == 275:
-                tap = False
-                for i in player_group:
-                    player_HP = i.HP
-                player_group.empty()
-                image = 'sprites/anim2.png'
-                if superSkill:
-                    image = 'sprites/anim2_2.png'
-                player = MainPlayer.AnimatedSprite(pygame.image.load(image),
-                                                   9, 1, player_x, player_y, player_group, player_HP, all_blocks)
-                was = True
+                go = player.forward()
             if event.key == 32:
                 spaceTap = True
                 for i in player_group:
                     player_HP = i.HP
-                player_group.empty()
-                image = 'sprites/anim3.png'
-                if superSkill:
-                    image = 'sprites/anim3_3.png'
-                player = MainPlayer.AnimatedSprite(pygame.image.load(image),
-                                                   7, 1, player_x, player_y - CELL_SIZE, player_group, player_HP, all_blocks)
+                    player_x = i.rect.x
+                    player_y = i.rect.y
                 b = True
             if event.key == 118:
                 pos_x = 0
@@ -158,39 +141,16 @@ while running:
                 HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters)
         elif event.type == pygame.KEYUP:
             if event.key == 275:
-                for i in player_group:
-                    player_HP = i.HP
-                player_group.empty()
-                image = 'sprites/anim1.png'
-                if superSkill:
-                    image = 'sprites/anim1_1.png'
-                player = MainPlayer.AnimatedSprite(pygame.image.load(image),
-                                                   8, 1, player_x, player_y, player_group, player_HP, all_blocks)
-                was = False
-                tap = True
-    if tap:
-        for i in player_group:
-            player_HP = i.HP
-        player_group.empty()
-        image = 'sprites/anim1.png'
-        if superSkill:
-            image = 'sprites/anim1_1.png'
-        player = MainPlayer.AnimatedSprite(pygame.image.load(image), 8, 1, player_x, player_y, player_group, player_HP, all_blocks)
+                go = False
+                player.stop()
     if b:
         t += 1
     if t == 7:
         b = False
         t = 0
-        for i in player_group:
-            player_HP = i.HP
-        player_group.empty()
-        image = 'sprites/anim1.png'
-        if superSkill:
-            image = 'sprites/anim1_1.png'
-        player = MainPlayer.AnimatedSprite(pygame.image.load(image), 8, 1, player_x, player_y, player_group, player_HP, all_blocks)
-    if was:
+    if go:
+        go = player.forward()
         Camera(all_sprites)
-        plus_x += PLAYER_SPEED
     screen.fill((255, 255, 255))
     back.draw(screen)
     clouds_sprites.draw(screen)

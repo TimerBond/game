@@ -1,4 +1,5 @@
 import pygame
+from const import *
 
 
 class Finish(pygame.sprite.Sprite):
@@ -8,5 +9,5 @@ class Finish(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = Finish.image
         self.rect = self.image.get_rect().move(
-            x, y
+            x * CELL_SIZE, y * CELL_SIZE
         )
