@@ -3,9 +3,10 @@ from const import *
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
-    def __init__(self, sheet, columns, rows, x, y, all_sprites, player_HP):
+    def __init__(self, sheet, columns, rows, x, y, all_sprites, player_HP, all_blocks):
         super().__init__(all_sprites)
         self.frames = []
+        self.all_blocks = all_blocks
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
@@ -27,3 +28,6 @@ class AnimatedSprite(pygame.sprite.Sprite):
     def update(self):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
+        self.rect.y += 10
+        if pygame.sprite.spritecollideany(self, self.all_blocks):
+            self.rect.y -= 10

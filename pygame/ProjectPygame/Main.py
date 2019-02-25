@@ -9,6 +9,7 @@ import sys
 import Money as money
 import MainPlayer
 import HeroBullet
+import Heart
 
 
 def terminate():
@@ -72,6 +73,7 @@ def Camera(all_sprites):
 
 pygame.font.init()
 moneyFont = pygame.font.SysFont('Money Shower', 50)
+lifeFont = pygame.font.SysFont('Life Shower', 50)
 all_sprites = pygame.sprite.Group()
 all_blocks = pygame.sprite.Group()
 back = pygame.sprite.Group()
@@ -80,6 +82,8 @@ coin_sprites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 hero_bullets = pygame.sprite.Group()
+heart = pygame.sprite.Group()
+h = Heart.Heart(heart)
 
 player_group = pygame.sprite.Group()
 type_monster = {
@@ -101,32 +105,44 @@ running = True
 start_screen()
 
 player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
-                                   8, 1, player_x, player_y, player_group, 3)
+                                   8, 1, player_x, player_y, player_group, 3, all_blocks)
 was = False
 b = False
 t = 0
 clock = pygame.time.Clock()
 player_HP = 3
+superSkill = False
+tap = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
+            if event.key == 114:
+                superSkill = True
+            if event.key == 116:
+                superSkill = False
             if event.key == 275:
-                cur_HP = 0
+                tap = False
                 for i in player_group:
-                    cur_HP = i.HP
+                    player_HP = i.HP
                 player_group.empty()
-                player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim2.png'),
-                                                   9, 1, player_x, player_y, player_group, cur_HP)
+                image = 'sprites/anim2.png'
+                if superSkill:
+                    image = 'sprites/anim2_2.png'
+                player = MainPlayer.AnimatedSprite(pygame.image.load(image),
+                                                   9, 1, player_x, player_y, player_group, player_HP, all_blocks)
                 was = True
             if event.key == 32:
-                cur_HP = 0
+                spaceTap = True
                 for i in player_group:
-                    cur_HP = i.HP
+                    player_HP = i.HP
                 player_group.empty()
-                player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim3.png'),
-                                                   7, 1, player_x, player_y - CELL_SIZE, player_group, cur_HP)
+                image = 'sprites/anim3.png'
+                if superSkill:
+                    image = 'sprites/anim3_3.png'
+                player = MainPlayer.AnimatedSprite(pygame.image.load(image),
+                                                   7, 1, player_x, player_y - CELL_SIZE, player_group, player_HP, all_blocks)
                 b = True
             if event.key == 118:
                 pos_x = 0
@@ -137,23 +153,36 @@ while running:
                 HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters)
         elif event.type == pygame.KEYUP:
             if event.key == 275:
-                cur_HP = 0
                 for i in player_group:
-                    cur_HP = i.HP
+                    player_HP = i.HP
                 player_group.empty()
-                player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'),
-                                                   8, 1, player_x, player_y, player_group, cur_HP)
+                image = 'sprites/anim1.png'
+                if superSkill:
+                    image = 'sprites/anim1_1.png'
+                player = MainPlayer.AnimatedSprite(pygame.image.load(image),
+                                                   8, 1, player_x, player_y, player_group, player_HP, all_blocks)
                 was = False
+                tap = True
+    if tap:
+        for i in player_group:
+            player_HP = i.HP
+        player_group.empty()
+        image = 'sprites/anim1.png'
+        if superSkill:
+            image = 'sprites/anim1_1.png'
+        player = MainPlayer.AnimatedSprite(pygame.image.load(image), 8, 1, player_x, player_y, player_group, player_HP, all_blocks)
     if b:
         t += 1
     if t == 7:
         b = False
         t = 0
-        cur_HP = 0
         for i in player_group:
-            cur_HP = i.HP
+            player_HP = i.HP
         player_group.empty()
-        player = MainPlayer.AnimatedSprite(pygame.image.load('sprites/anim1.png'), 8, 1, 0, 0, player_group, cur_HP)
+        image = 'sprites/anim1.png'
+        if superSkill:
+            image = 'sprites/anim1_1.png'
+        player = MainPlayer.AnimatedSprite(pygame.image.load(image), 8, 1, player_x, player_y, player_group, player_HP, all_blocks)
     if was:
         Camera(all_sprites)
     screen.fill((255, 255, 255))
@@ -173,5 +202,8 @@ while running:
     bullets.update()
     player_group.draw(screen)
     player_group.update()
+    heart.draw(screen)
+    lifeIcon = lifeFont.render(str(player_HP), False, (0, 0, 0))
+    screen.blit(lifeIcon, (50, 5))
     clock.tick(10)
     pygame.display.flip()
