@@ -110,44 +110,32 @@ start_screen()
 
 player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks)
 go = False
-b = False
-t = 0
 clock = pygame.time.Clock()
 player_HP = 3
 while running:
+    player_HP = player.HP
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == 114:
-                superSkill = True
+                player.changeHeightMode(1)
             if event.key == 116:
-                superSkill = False
+                player.changeHeightMode(0)
             if event.key == 275:
                 go = player.forward()
+                Camera(all_sprites)
             if event.key == 32:
-                spaceTap = True
-                for i in player_group:
-                    player_HP = i.HP
-                    player_x = i.rect.x
-                    player_y = i.rect.y
-                b = True
+                if go:
+                    player.jump()
             if event.key == 118:
-                pos_x = 0
-                pos_y = 0
-                for j in player_group:
-                    pos_x = j.rect.x
-                    pos_y = j.rect.y
+                pos_x = player.rect.x
+                pos_y = player.rect.y
                 HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters)
         elif event.type == pygame.KEYUP:
             if event.key == 275:
                 go = False
                 player.stop()
-    if b:
-        t += 1
-    if t == 7:
-        b = False
-        t = 0
     if go:
         go = player.forward()
         Camera(all_sprites)

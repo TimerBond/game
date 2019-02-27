@@ -21,7 +21,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.changeMode(0)
         self.image = self.frames[self.cur_frame]
         self.rect.x = x
-        self.rect.y = y - self.rect.h + CELL_SIZE + 3
+        self.rect.y = y - self.rect.h + CELL_SIZE + 5
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect.h = sheet.get_height() // rows
@@ -35,9 +35,11 @@ class AnimatedSprite(pygame.sprite.Sprite):
     def update(self):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
-        self.rect.y += 10
-        if pygame.sprite.spritecollideany(self, self.all_blocks) is not None:
-            self.rect.y -= 10
+        self.rect.y += 50
+        blocks = pygame.sprite.spritecollide(self, self.all_blocks, False)
+        if len(blocks) > 0:
+            self.rect.y -= 50
+            self.rect.y = blocks[0].rect.y - self.rect.h + 5
 
     def changeMode(self, mode):
         self.frames = []
@@ -57,3 +59,21 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
     def stop(self):
         self.changeMode(0)
+
+    def jump(self):
+        mode = self.mode
+        self.changeMode(2)
+        if self.heightMode == 0:
+            self.rect.y -= CELL_SIZE
+        self.changeMode(mode)
+
+    def changeHeightMode(self, newMode):
+        self.heightMode = newMode
+        if newMode == 1:
+            self.rect.y += CELL_SIZE // 2
+        else:
+            self.rect.y -= CELL_SIZE // 2
+        self.changeMode(self.mode)
+
+
+
