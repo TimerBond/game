@@ -69,9 +69,9 @@ def generate_map(map):
     return x, y, count
 
 
-def Camera(all_sprites):
+def Camera(all_sprites, to):
     for sprite in all_sprites:
-        sprite.rect.x -= PLAYER_SPEED
+        sprite.rect.x -= PLAYER_SPEED * to
 
 
 pygame.font.init()
@@ -108,37 +108,43 @@ running = True
 
 start_screen()
 
-player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks)
+player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites)
 go = False
 clock = pygame.time.Clock()
 player_HP = 3
+to = 1
 while running:
     player_HP = player.HP
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
+            if event.key == 276:
+                to = -1
+                go = player.forward(to)
+                Camera(all_sprites, to)
             if event.key == 114:
                 player.changeHeightMode(1)
             if event.key == 116:
                 player.changeHeightMode(0)
             if event.key == 275:
-                go = player.forward()
-                Camera(all_sprites)
+                to = 1
+                go = player.forward(to)
+                Camera(all_sprites, to)
             if event.key == 32:
-                if go:
+                if go and player.heightMode == 0:
                     player.jump()
             if event.key == 118:
                 pos_x = player.rect.x
                 pos_y = player.rect.y
                 HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters)
         elif event.type == pygame.KEYUP:
-            if event.key == 275:
+            if event.key == 275 or event.key == 276:
                 go = False
                 player.stop()
     if go:
-        go = player.forward()
-        Camera(all_sprites)
+        go = player.forward(to)
+        Camera(all_sprites, to)
     screen.fill((255, 255, 255))
     back.draw(screen)
     clouds_sprites.draw(screen)

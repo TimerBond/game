@@ -6,11 +6,12 @@ class AnimatedSprite(pygame.sprite.Sprite):
     modes = {
         0: (pygame.image.load('sprites/anim1.png'), pygame.image.load('sprites/anim1_1.png'), 8, 1),
         1: (pygame.image.load('sprites/anim2.png'), pygame.image.load('sprites/anim2_2.png'), 9, 1),
-        2: (pygame.image.load('sprites/anim3.png'), pygame.image.load('sprites/anim3_3.png'), 7, 1)
+        2: (pygame.image.load('sprites/anim3.png'), pygame.image.load('sprites/anim3_3.png'), 7, 1),
+        3: (pygame.image.load('sprites/anim4.png'), pygame.image.load('sprites/anim4_4.png'), 9, 1)
     }
 
-    def __init__(self, x, y, all_sprites, all_blocks):
-        super().__init__(all_sprites)
+    def __init__(self, x, y, group, all_blocks, all_sprites):
+        super().__init__(group, all_sprites)
         self.heightMode = 0
         self.mode = 0
         self.frames = []
@@ -46,14 +47,17 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.cut_sheet(AnimatedSprite.modes[mode][self.heightMode], AnimatedSprite.modes[mode][2], AnimatedSprite.modes[mode][3])
         self.mode = mode
 
-    def forward(self):
+    def forward(self, to):
         if self.mode == 0:
-            self.changeMode(1)
-        self.rect.x += PLAYER_SPEED
+            if to == 1:
+                self.changeMode(1)
+            else:
+                self.changeMode(3)
+        self.rect.x += PLAYER_SPEED * to
         blocks = pygame.sprite.spritecollide(self, self.all_blocks, False)
         for block in blocks:
             if block.rect.y < self.rect.y + self.rect.h - 10:
-                self.rect.x -= PLAYER_SPEED
+                self.rect.x -= PLAYER_SPEED * to
                 return False
         return True
 
@@ -65,6 +69,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.changeMode(2)
         if self.heightMode == 0:
             self.rect.y -= CELL_SIZE
+            self.rect.x += CELL_SIZE // 2
         self.changeMode(mode)
 
     def changeHeightMode(self, newMode):
