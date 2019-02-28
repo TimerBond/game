@@ -19,4 +19,8 @@ class HeroBullet(pygame.sprite.Sprite):
         self.rect.x += 10
         if pygame.sprite.spritecollideany(self, self.all_blocks):
             self.group.remove(self)
-        bullets = pygame.sprite.spritecollide(self, self.bullets)
+        bullets = pygame.sprite.spritecollide(self, self.bullets, False)
+        if len(bullets) > 0:
+            self.group.remove(self)
+            for i in bullets:
+                self.bullets.remove(i)

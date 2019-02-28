@@ -111,6 +111,7 @@ start_screen()
 player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
 go = False
 clock = pygame.time.Clock()
+runned = 0
 player_HP = 3
 to = 1
 while running:
@@ -153,14 +154,17 @@ while running:
             if event.key == 118:
                 pos_x = player.rect.x
                 pos_y = player.rect.y
-                HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters)
+                HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters, bullets)
         elif event.type == pygame.KEYUP:
             if event.key == 275 or event.key == 276:
                 go = False
                 player.stop()
+    if runned < 0:
+        go = False
     if go:
         go = player.forward(to)
         Camera(all_sprites, to)
+        runned += PLAYER_SPEED * to
     screen.fill((255, 255, 255))
     back.draw(screen)
     clouds_sprites.draw(screen)
