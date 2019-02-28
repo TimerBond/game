@@ -35,7 +35,7 @@ def start_screen():
             if event.type == pygame.QUIT:
                 terminate()
             elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
+                            event.type == pygame.MOUSEBUTTONDOWN:
                 return
         pygame.display.flip()
 
@@ -74,117 +74,107 @@ def Camera(all_sprites, to):
         sprite.rect.x -= PLAYER_SPEED * to
 
 
+screen = pygame.display.set_mode(SIZE)
 pygame.font.init()
 moneyFont = pygame.font.SysFont('Money Shower', 50)
 lifeFont = pygame.font.SysFont('Life Shower', 50)
-all_sprites = pygame.sprite.Group()
-all_blocks = pygame.sprite.Group()
-back = pygame.sprite.Group()
-clouds_sprites = pygame.sprite.Group()
-coin_sprites = pygame.sprite.Group()
-monsters = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
-hero_bullets = pygame.sprite.Group()
-finish_group = pygame.sprite.Group()
-heart = pygame.sprite.Group()
-h = Heart.Heart(heart)
+play = True
+while play:
+    all_sprites = pygame.sprite.Group()
+    all_blocks = pygame.sprite.Group()
+    back = pygame.sprite.Group()
+    clouds_sprites = pygame.sprite.Group()
+    coin_sprites = pygame.sprite.Group()
+    monsters = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
+    hero_bullets = pygame.sprite.Group()
+    finish_group = pygame.sprite.Group()
+    heart = pygame.sprite.Group()
+    Heart.Heart(heart)
 
-player_group = pygame.sprite.Group()
-type_monster = {
-    "1_1": "sprites/monster1_1.png",
-    "1_2": "sprites/monster1_2.png"
-}
-c = coin.Coin(coin_sprites)
-player_x = 0
-player_y = 0
+    player_group = pygame.sprite.Group()
+    type_monster = {
+        "1_1": "sprites/monster1_1.png",
+        "1_2": "sprites/monster1_2.png"
+    }
+    coin.Coin(coin_sprites)
+    player_x = 0
+    player_y = 0
 
-width, height, count_coins = generate_map(load_level("Hill.txt"))
+    width, height, count_coins = generate_map(load_level("Hill.txt"))
 
-screen = pygame.display.set_mode(SIZE)
-background = bg.Background(back)
-for _ in range(5):
-    cl = cloud.Cloud(clouds_sprites, all_sprites)
-running = True
+    background = bg.Background(back)
+    for _ in range(5):
+        cl = cloud.Cloud(clouds_sprites, all_sprites)
+    running = True
 
-start_screen()
+    start_screen()
 
-player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
-go = False
-clock = pygame.time.Clock()
-runned = 0
-player_HP = 3
-to = 1
-while running:
-    player_HP = player.HP
-    if player_HP == 0:
-        coin_sprites.empty()
-        all_sprites.empty()
-        all_blocks.empty()
-        monsters.empty()
-        bullets.empty()
-        hero_bullets.empty()
-        finish_group.empty()
-        player_group.empty()
-        moneyFont = pygame.font.SysFont('Money Shower', 50)
-        lifeFont = pygame.font.SysFont('Life Shower', 50)
-        w, h, count_coins = generate_map(load_level("Hill.txt"))
-        c = coin.Coin(coin_sprites)
-        player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
-        go = False
-        to = 1
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == 276:
-                to = -1
-                go = player.forward(to)
-                Camera(all_sprites, to)
-            if event.key == 114:
-                player.changeHeightMode(1)
-            if event.key == 116:
-                player.changeHeightMode(0)
-            if event.key == 275:
-                to = 1
-                go = player.forward(to)
-                Camera(all_sprites, to)
-            if event.key == 32:
-                if go and player.heightMode == 0:
-                    player.jump()
-            if event.key == 118:
-                pos_x = player.rect.x
-                pos_y = player.rect.y
-                HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters, bullets)
-        elif event.type == pygame.KEYUP:
-            if event.key == 275 or event.key == 276:
-                go = False
-                player.stop()
-    if runned < 0:
-        go = False
-    if go:
-        go = player.forward(to)
-        Camera(all_sprites, to)
-        runned += PLAYER_SPEED * to
-    screen.fill((255, 255, 255))
-    back.draw(screen)
-    clouds_sprites.draw(screen)
-    clouds_sprites.update()
-    all_blocks.draw(screen)
-    coin_sprites.draw(screen)
-    coin_sprites.update()
-    moneyIcon = moneyFont.render(str(count_coins - len(coin_sprites) + 1), False, (0, 0, 0))
-    screen.blit(moneyIcon, (1300, 10))
-    hero_bullets.draw(screen)
-    hero_bullets.update()
-    monsters.draw(screen)
-    monsters.update()
-    bullets.draw(screen)
-    bullets.update()
-    player_group.draw(screen)
-    player_group.update()
-    heart.draw(screen)
-    lifeIcon = lifeFont.render(str(player_HP), False, (0, 0, 0))
-    screen.blit(lifeIcon, (50, 5))
-    finish_group.draw(screen)
-    clock.tick(10)
-    pygame.display.flip()
+    player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
+    go = False
+    clock = pygame.time.Clock()
+    runned = 0
+    player_HP = 3
+    to = 1
+    while running:
+        player_HP = player.HP
+        if player_HP == 0:
+            break
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                play = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == 276:
+                    to = -1
+                    go = player.forward(to)
+                    Camera(all_sprites, to)
+                if event.key == 114:
+                    player.changeHeightMode(1)
+                if event.key == 116:
+                    player.changeHeightMode(0)
+                if event.key == 275:
+                    to = 1
+                    go = player.forward(to)
+                    Camera(all_sprites, to)
+                if event.key == 32:
+                    if go and player.heightMode == 0:
+                        player.jump()
+                if event.key == 118:
+                    pos_x = player.rect.x
+                    pos_y = player.rect.y
+                    HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters, bullets)
+            elif event.type == pygame.KEYUP:
+                if event.key == 275 or event.key == 276:
+                    go = False
+                    player.stop()
+        if not play:
+            break
+        if runned < 0:
+            go = False
+        if go:
+            go = player.forward(to)
+            Camera(all_sprites, to)
+            runned += PLAYER_SPEED * to
+        screen.fill((255, 255, 255))
+        back.draw(screen)
+        clouds_sprites.draw(screen)
+        clouds_sprites.update()
+        all_blocks.draw(screen)
+        coin_sprites.draw(screen)
+        coin_sprites.update()
+        moneyIcon = moneyFont.render(str(count_coins - len(coin_sprites) + 1), False, (0, 0, 0))
+        screen.blit(moneyIcon, (1300, 10))
+        hero_bullets.draw(screen)
+        hero_bullets.update()
+        monsters.draw(screen)
+        monsters.update()
+        bullets.draw(screen)
+        bullets.update()
+        player_group.draw(screen)
+        player_group.update()
+        heart.draw(screen)
+        lifeIcon = lifeFont.render(str(player_HP), False, (0, 0, 0))
+        screen.blit(lifeIcon, (50, 5))
+        finish_group.draw(screen)
+        clock.tick(10)
+        pygame.display.flip()

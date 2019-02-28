@@ -1,13 +1,12 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QInputDialog, QDesktopWidget, QPushButton, QLabel, QMessageBox
-from PyQt5.uic.properties import QtGui
+from PyQt5.QtWidgets import QWidget, QInputDialog
 
 
 class ChooseMap(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.choose()
+        self.map = "Hill.txt"
 
     def choose(self):
         action, okBtnPressed = QInputDialog.getItem(
@@ -20,5 +19,3 @@ class ChooseMap(QWidget):
         )
         if okBtnPressed:
             self.map = action + ".txt"
-        else:
-            self.map = "Hill.txt"
