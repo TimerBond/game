@@ -89,6 +89,7 @@ moneyFont = pygame.font.SysFont('Money Shower', 50)
 lifeFont = pygame.font.SysFont('Life Shower', 50)
 play = True
 dead = False
+finish = False
 while play:
     all_sprites = pygame.sprite.Group()
     all_blocks = pygame.sprite.Group()
@@ -119,15 +120,18 @@ while play:
     mapName = ""
     if dead:
         start_screen('sprites/gameover.png')
+    elif finish:
+        start_screen('sprites/win.png')
     else:
         start_screen('sprites/fon.png')
 
+    finish = False
     dead = False
 
     width, height, count_coins = generate_map(load_level(mapName))
     player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
-    pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
-    pygame.mixer.music.play()
+    #pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
+    #pygame.mixer.music.play()
     go = False
     clock = pygame.time.Clock()
     runned = 0
@@ -137,6 +141,9 @@ while play:
         player_HP = player.HP
         if player_HP == 0:
             dead = True
+            break
+        elif player.isFinished:
+            finish = True
             break
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -171,11 +178,12 @@ while play:
                     player.stop()
         if not play:
             break
-        if runned < 0:
+        if runned < 0 or width * CELL_SIZE <= runned:
             go = False
         if go:
             go = player.forward(to)
-            Camera(all_sprites, to)
+            if width * CELL_SIZE - SIZE[1] > runned:
+                Camera(all_sprites, to)
             runned += PLAYER_SPEED * to
         screen.fill((255, 255, 255))
         back.draw(screen)

@@ -28,7 +28,6 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, self.all_blocks) or self.rect.x < 0:
             self.group.remove(self)
         if pygame.sprite.spritecollideany(self, self.player):
-            pygame.mixer.Sound('sounds/classic_hurt.mp3').play()
             self.group.remove(self)
             for i in self.player:
                 i.HP -= 1

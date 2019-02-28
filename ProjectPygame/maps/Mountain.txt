@@ -13,19 +13,3 @@ P.C....C...#####################################################################
 ###################################################################################
 ###################################################################################
 ###################################################################################
-
-
-if player.HP == 0:
-        all_sprites.empty()
-        all_blocks.empty()
-        monsters.empty()
-        bullets.empty()
-        hero_bullets.empty()
-        finish_group.empty()
-        player_group.empty()
-        moneyFont = pygame.font.SysFont('Money Shower', 50)
-        lifeFont = pygame.font.SysFont('Life Shower', 50)
-        w, h, cnt_coins = generate_map("Hill.txt")
-        player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
-        go = False
-        to = 1
