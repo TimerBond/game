@@ -11,6 +11,7 @@ import MainPlayer
 import HeroBullet
 import Heart
 import Finish
+import Menu
 
 
 def terminate():
@@ -25,13 +26,15 @@ def start_screen(fon):
     fon = pygame.transform.scale(pygame.image.load(fon), (SIZE[0], SIZE[1]))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 200)
-    text_coord = 450
+    text_coord = 100
     for line in intro_text:
         string_rendered = font.render(line, 1, pygame.Color('white'))
         intro_rect = string_rendered.get_rect()
         intro_rect.y = text_coord
-        intro_rect.x = 475
+        intro_rect.x = 450
         screen.blit(string_rendered, intro_rect)
+    menu = Menu.Menu()
+    screen.blit(menu.image, (SIZE[0] // 3, SIZE[1] // 3))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -117,8 +120,8 @@ while play:
 
     width, height, count_coins = generate_map(load_level("Hill.txt"))
     player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
-    pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
-    pygame.mixer.music.play()
+    #pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
+    #pygame.mixer.music.play()
     go = False
     clock = pygame.time.Clock()
     runned = 0
