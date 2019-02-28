@@ -33,15 +33,18 @@ def start_screen(fon):
         intro_rect.y = text_coord
         intro_rect.x = 450
         screen.blit(string_rendered, intro_rect)
-    menu = Menu.Menu()
+    menu = Menu.Menu(SIZE[1] // 3, SIZE[0] // 3)
     screen.blit(menu.image, (SIZE[0] // 3, SIZE[1] // 3))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            elif event.type == pygame.KEYDOWN or \
-                            event.type == pygame.MOUSEBUTTONDOWN:
-                return
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                y = menu.get_click(event.pos)
+                if y <= len(MAPS) - 1:
+                    global mapName
+                    mapName = MAPS[y]
+                    return
         pygame.display.flip()
 
 
@@ -111,6 +114,8 @@ while play:
     for _ in range(5):
         cl = cloud.Cloud(clouds_sprites, all_sprites)
     running = True
+
+    mapName = ""
     if dead:
         start_screen('sprites/gameover.png')
     else:
@@ -118,7 +123,7 @@ while play:
 
     dead = False
 
-    width, height, count_coins = generate_map(load_level("Hill.txt"))
+    width, height, count_coins = generate_map(load_level(mapName))
     player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
     #pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
     #pygame.mixer.music.play()
