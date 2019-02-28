@@ -117,6 +117,8 @@ while play:
 
     width, height, count_coins = generate_map(load_level("Hill.txt"))
     player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
+    pygame.mixer.music.load('C418 - Subwoofer Lullaby.mp3')
+    pygame.mixer.music.play()
     go = False
     clock = pygame.time.Clock()
     runned = 0
@@ -151,7 +153,11 @@ while play:
                     pos_y = player.rect.y
                     HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters, bullets)
             elif event.type == pygame.KEYUP:
-                if event.key == 275 or event.key == 276:
+                if event.key == 273:
+                    pygame.mixer.music.set_volume(1)
+                elif event.key == 274:
+                    pygame.mixer.music.set_volume(0.5)
+                elif event.key == 275 or event.key == 276:
                     go = False
                     player.stop()
         if not play:
