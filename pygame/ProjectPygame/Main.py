@@ -98,7 +98,7 @@ c = coin.Coin(coin_sprites)
 player_x = 0
 player_y = 0
 
-width, height, count_coins = generate_map(load_level("map_1.txt"))
+width, height, count_coins = generate_map(load_level("Hill.txt"))
 
 screen = pygame.display.set_mode(SIZE)
 background = bg.Background(back)
@@ -108,13 +108,29 @@ running = True
 
 start_screen()
 
-player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites)
+player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
 go = False
 clock = pygame.time.Clock()
 player_HP = 3
 to = 1
 while running:
     player_HP = player.HP
+    if player_HP == 0:
+        coin_sprites.empty()
+        all_sprites.empty()
+        all_blocks.empty()
+        monsters.empty()
+        bullets.empty()
+        hero_bullets.empty()
+        finish_group.empty()
+        player_group.empty()
+        moneyFont = pygame.font.SysFont('Money Shower', 50)
+        lifeFont = pygame.font.SysFont('Life Shower', 50)
+        w, h, count_coins = generate_map(load_level("Hill.txt"))
+        c = coin.Coin(coin_sprites)
+        player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
+        go = False
+        to = 1
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False

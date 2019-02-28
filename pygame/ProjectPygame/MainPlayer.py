@@ -10,9 +10,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
         3: (pygame.image.load('sprites/anim4.png'), pygame.image.load('sprites/anim4_4.png'), 9, 1)
     }
 
-    def __init__(self, x, y, group, all_blocks, all_sprites):
+    def __init__(self, x, y, group, all_blocks, all_sprites, finish):
         super().__init__(group, all_sprites)
         self.heightMode = 0
+        self.finish = finish
         self.mode = 0
         self.frames = []
         self.cur_frame = 0
@@ -23,6 +24,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
         self.rect.x = x
         self.rect.y = y - self.rect.h + CELL_SIZE + 5
+        self.isFinished = False
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect.h = sheet.get_height() // rows
@@ -41,6 +43,8 @@ class AnimatedSprite(pygame.sprite.Sprite):
         if len(blocks) > 0:
             self.rect.y -= 50
             self.rect.y = blocks[0].rect.y - self.rect.h + 5
+        if pygame.sprite.spritecollideany(self, self.finish):
+            self.isFinished = True
 
     def changeMode(self, mode):
         self.frames = []
