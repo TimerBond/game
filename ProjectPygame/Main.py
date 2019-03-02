@@ -22,7 +22,7 @@ def terminate():
 
 def start_screen(fon):
     intro_text = []
-    if fon != "sprites/gameover.png":
+    if fon != "sprites/gameover.png" and fon != "sprites/win.png":
         intro_text.append("Runner")
     fon = pygame.transform.scale(pygame.image.load(fon), (SIZE[0], SIZE[1]))
     screen.blit(fon, (0, 0))
@@ -42,7 +42,9 @@ def start_screen(fon):
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 y = menu.get_click(event.pos)
-                if y <= len(MAPS) - 1:
+                if y is None:
+                    pass
+                elif y <= len(MAPS) - 1:
                     global mapName
                     mapName = MAPS[y]
                     return
@@ -74,7 +76,7 @@ def generate_map(map):
                 player_x = x * CELL_SIZE
                 player_y = y * CELL_SIZE
             elif map[y][x] == 'F':
-                Finish.Finish(finish_group, x, y)
+                Finish.Finish(finish_group, x, y, all_sprites)
     return x, y, count
 
 
@@ -167,7 +169,7 @@ while play:
                 if event.key == 118:
                     pos_x = player.rect.x
                     pos_y = player.rect.y
-                    HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters, bullets)
+                    HeroBullet.HeroBullet(hero_bullets, all_sprites, pos_x, pos_y, all_blocks, monsters, bullets, to)
             elif event.type == pygame.KEYUP:
                 if event.key == 273:
                     pygame.mixer.music.set_volume(1)
@@ -178,11 +180,11 @@ while play:
                     player.stop()
         if not play:
             break
-        if runned < 0 or width * CELL_SIZE <= runned:
+        if runned < 0:
             go = False
         if go:
             go = player.forward(to)
-            if width * CELL_SIZE - SIZE[1] > runned:
+            if width * CELL_SIZE - SIZE[0] > runned:
                 Camera(all_sprites, to)
             runned += PLAYER_SPEED * to
         screen.fill((255, 255, 255))

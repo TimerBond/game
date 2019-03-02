@@ -39,9 +39,11 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
         self.rect.y += 50
+        self.rect.x += 15
         blocks = pygame.sprite.spritecollide(self, self.all_blocks, False)
         if len(blocks) > 0:
             self.rect.y -= 50
+            self.rect.x -= 15
             self.rect.y = blocks[0].rect.y - self.rect.h + 5
         if pygame.sprite.spritecollideany(self, self.finish):
             self.isFinished = True

@@ -4,9 +4,9 @@ from const import *
 
 class Finish(pygame.sprite.Sprite):
 
-    def __init__(self, group, x, y):
-        super().__init__(group)
+    def __init__(self, group, x, y, all_sprites):
+        super().__init__(group, all_sprites)
         self.image = pygame.image.load('sprites/finish.png')
-        self.rect = self.image.get_rect()
-        self.rect.x = x * CELL_SIZE
-        self.rect.y = y * CELL_SIZE
+        self.rect = self.image.get_rect().move(
+            x * CELL_SIZE, y * CELL_SIZE
+        )

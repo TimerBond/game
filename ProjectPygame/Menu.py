@@ -28,7 +28,9 @@ class Menu(pygame.sprite.Sprite):
     def get_cell(self, mouse_pos):
         x = mouse_pos[0] // 450
         y = mouse_pos[1] // self.h
-        if x > 1 or y > self.height - 1:
+        if x < 0 or y < 0:
+            return None
+        if x >= 1 or y > self.height - 1:
             return None
         else:
             return y
