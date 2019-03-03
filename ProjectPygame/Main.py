@@ -132,8 +132,8 @@ while play:
 
     width, height, count_coins = generate_map(load_level(mapName))
     player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
-    #pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
-    #pygame.mixer.music.play()
+    pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
+    pygame.mixer.music.play()
     go = False
     clock = pygame.time.Clock()
     runned = 0
