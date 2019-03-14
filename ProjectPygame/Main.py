@@ -134,6 +134,7 @@ while play:
     player = MainPlayer.AnimatedSprite(player_x, player_y, player_group, all_blocks, all_sprites, finish_group)
     pygame.mixer.music.load('sounds/C418 - Subwoofer Lullaby.mp3')
     pygame.mixer.music.play()
+    pygame.mixer.music.set_volume(0.5)
     go = False
     clock = pygame.time.Clock()
     runned = 0
